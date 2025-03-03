@@ -1,0 +1,75 @@
+---
+title: "Normality and parametric tests"
+output: html_document
+date: "2024-12-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Parametric tests
+
+```{r}
+library("dplyr")
+library("ggpubr")
+
+my_data <- read.csv(file.choose())
+```
+
+```{r}
+# Import data
+my_data <- read.csv("C:/Users/win/Desktop/OptimizerGlasser/Alice/combined_df_all_participants_differences.csv")
+
+#display a random sample of 10 rows 
+set.seed(1234)
+dplyr::sample_n(my_data, 10)
+
+```
+
+```{r}
+#we want to assess normality of the variable delta_thickness and delta_porosity
+ggqqplot(my_data$delta_thickness)
+ggdensity(my_data$delta_thickness)
+
+
+```
+
+```{r}
+#we want to assess normality of the variable delta_thickness and delta_porosity
+ggqqplot(my_data$delta_porosity)
+ggdensity(my_data$delta_porosity)
+```
+
+```{r}
+#Kolmogorov-Smirnov test (ks.test) BUT we have many ties so prob not correct
+
+ks.test(my_data$delta_thickness, "pnorm", mean = mean(my_data$delta_thickness), sd = sd(my_data$delta_thickness))
+
+ks.test(my_data$delta_porosity, "pnorm", mean = mean(my_data$delta_porosity), sd = sd(my_data$delta_porosity))
+
+```
+
+```{r}
+library(nortest)
+
+# Apply Anderson-Darling test BUT we have many ties so prob not correct
+ad.test(my_data$delta_thickness)
+ad.test(my_data$delta_porosity)
+```
+
+```{r}
+#Chi-Square Goodness of Fit test
+chisq.test(table(my_data$delta_thickness))
+chisq.test(table(my_data$delta_porosity))
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
